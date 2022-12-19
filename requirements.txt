@@ -1,6 +1,6 @@
 alembic==1.1.0
 appdirs==1.4.4
-attrs==22.1.0
+attrs
 blinker==1.4
 certifi==2019.6.16
 chardet==3.0.4
