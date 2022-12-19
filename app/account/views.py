@@ -24,7 +24,7 @@ from app.account.forms import (
     RequestResetPasswordForm,
     ResetPasswordForm,
 )
-from app.email import send_email
+from app.emailing import send_email
 from app.models import User
 
 account = Blueprint('account', __name__)
