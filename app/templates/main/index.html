@@ -1,6 +1,10 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
+<!--for the map-->
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css">
+<!--end of map -->
     <div class="ui text container">
       <h1>Hello {% if not (current_user.is_authenticated) %} world {% else %} {{ current_user.full_name() }} {% endif %},</h1>
 

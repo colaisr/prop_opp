@@ -1,3 +1,6 @@
+import os
+import requests
+import xlrd
 from flask import (
     Blueprint,
     abort,
@@ -19,7 +22,7 @@ from app.admin.forms import (
 )
 from app.decorators import admin_required
 from app.emailing import send_email
-from app.models import EditableHTML, Role, User
+from app.models import EditableHTML, Role, User, Flat
 
 admin = Blueprint('admin', __name__)
 
@@ -94,6 +97,80 @@ def registered_users():
     roles = Role.query.all()
     return render_template(
         'admin/registered_users.html', users=users, roles=roles)
+
+
+ALLOWED_EXTENSIONS = {'xlsx'}
+UPLOAD_FOLDER = '/uploads'
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@admin.route('/flats', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def flats():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if len(request.files)<1:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['uploadedfile']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            file.save(filename)
+            # Open the Workbook
+            workbook = xlrd.open_workbook(filename)
+
+            # Open the worksheet
+            worksheet = workbook.sheet_by_index(0)
+
+            # Iterate the rows and columns
+
+            Flat.query.delete()
+            for i in range(2, 100):
+                if worksheet.cell_value(i, 0)=='':
+                    break
+
+                flat_to_save=Flat()
+                flat_to_save.address = worksheet.cell_value(i, 0)
+                flat_to_save.Valid_date = worksheet.cell_value(i, 2)
+                flat_to_save.priceN = worksheet.cell_value(i, 3)
+                flat_to_save.plus = worksheet.cell_value(i, 4)
+                flat_to_save.price_k = worksheet.cell_value(i, 5)
+                flat_to_save.market = worksheet.cell_value(i, 6)
+                flat_to_save.profit = worksheet.cell_value(i, 7)
+                flat_to_save.percent = worksheet.cell_value(i, 8)
+                flat_to_save.comment = worksheet.cell_value(i, 10)
+                search_string=flat_to_save.address
+                search_string = search_string.split(':')[1]
+                search_string = search_string.replace(".", "")
+                search_string = search_string.replace(",", "")
+                #search_string = search_string.replace(":", " ")
+                search_string = search_string.replace(" ", "%20")
+                url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+search_string+"&key="+"AIzaSyB1-XsaWMPoip4mCid-NSbDmb_kpe0CI_4"
+                payload = {}
+                headers = {}
+                response = requests.request("GET", url, headers=headers, data=payload)
+                rt=response.json()
+                if len(rt['results'])>0:
+                    result=rt['results'][0]
+                    flat_to_save.lng=result['geometry']['location']['lng']
+                    flat_to_save.lat=result['geometry']['location']['lat']
+
+                flat_to_save.add()
+
+
+    flats= Flat.query.all()
+    return render_template(
+        'admin/flats.html', flats=flats)
+
+
 
 
 @admin.route('/user/<int:user_id>')

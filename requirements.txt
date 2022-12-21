@@ -42,3 +42,4 @@ urllib3==1.26.0
 webassets==0.12.1
 Werkzeug==0.16.1
 WTForms==2.2.1
+xlrd==1.2.0
