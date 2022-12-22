@@ -40,7 +40,7 @@ $(document).ready(function () {
             for (let i = 0; i < flats.length; i++) {
 
                          myPlacemark = new ymaps.Placemark([flats[i].lat, flats[i].lng], {
-                address: "ЦенаК: "+flats[i].price_k,
+                address: "ЦенаH: "+flats[i].price_n,
                 object: "ID: "+flats[i].id
             }, {
                 hintLayout: HintLayout
