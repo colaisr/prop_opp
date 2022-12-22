@@ -1,4 +1,7 @@
 import os
+from decimal import Decimal
+
+from yandex_geocoder import Client
 import requests
 import xlrd
 from flask import (
@@ -149,19 +152,29 @@ def flats():
                 flat_to_save.comment = worksheet.cell_value(i, 10)
                 search_string=flat_to_save.address
                 search_string = search_string.split(':')[1]
-                search_string = search_string.replace(".", "")
-                search_string = search_string.replace(",", "")
-                #search_string = search_string.replace(":", " ")
-                search_string = search_string.replace(" ", "%20")
-                url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+search_string+"&key="+"AIzaSyB1-XsaWMPoip4mCid-NSbDmb_kpe0CI_4"
-                payload = {}
-                headers = {}
-                response = requests.request("GET", url, headers=headers, data=payload)
-                rt=response.json()
-                if len(rt['results'])>0:
-                    result=rt['results'][0]
-                    flat_to_save.lng=result['geometry']['location']['lng']
-                    flat_to_save.lat=result['geometry']['location']['lat']
+
+                #yandex version
+                try:
+                    client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
+                    coordinates = client.coordinates(search_string)
+                    flat_to_save.lat=coordinates[1]
+                    flat_to_save.lng=coordinates[0]
+                except Exception as e:
+                    i=e
+                #google version
+                # search_string = search_string.replace(".", "")
+                # search_string = search_string.replace(",", "")
+                # #search_string = search_string.replace(":", " ")
+                # search_string = search_string.replace(" ", "%20")
+                # url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+search_string+"&key="+"AIzaSyB1-XsaWMPoip4mCid-NSbDmb_kpe0CI_4"
+                # payload = {}
+                # headers = {}
+                # response = requests.request("GET", url, headers=headers, data=payload)
+                # rt=response.json()
+                # if len(rt['results'])>0:
+                #     result=rt['results'][0]
+                #     flat_to_save.lng=result['geometry']['location']['lng']
+                #     flat_to_save.lat=result['geometry']['location']['lat']
 
                 flat_to_save.add()
 

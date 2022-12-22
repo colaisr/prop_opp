@@ -1,21 +1,36 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
+
 <!--for the map-->
-<script src="https://cdn.jsdelivr.net/npm/ol@v7.1.0/dist/ol.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.1.0/ol.css">
+    <style>
+        .my-hint {
+            display: inline-block;
+            padding: 5px;
+            height: 35px;
+            position: relative;
+            left: -10px;
+            width: 195px;
+            font-size: 11px;
+            line-height: 17px;
+            color: #333333;
+            text-align: center;
+            vertical-align: middle;
+            background-color: #faefb6;
+            border: 1px solid #CDB7B5;
+            border-radius: 20px;
+            font-family: Arial;
+        }
+    </style>
 <!--end of map -->
-    <div class="ui text container">
-      <h1>Hello {% if not (current_user.is_authenticated) %} world {% else %} {{ current_user.full_name() }} {% endif %},</h1>
+    <div id="maincontent" class="ui text container">
+        <p>
+              <div id="main_map" style="width:800px; height:700px"></div>
+        </p>
 
-        <p>This is <a href="http://hack4impact.org">Hack4Impact</a>'s web application template. We'll use this as a
-        foundation for each of our <a href="http://flask.pocoo.org">Flask</a> projects. The goal is to reduce the work
-        necessary to get a new project off the ground, by providing boilerplate code (such as account management
-        facilities), as well as uncontroversial and extensible defaults. We have integrated an
-        <a href="http://sass-lang.com">SCSS</a>-based asset pipeline based around a (fantastic!) framework
-        called <a href="http://semantic-ui.com">Semantic UI</a>. Much of this code is appropriated from the examples
-        in Miguel Grinberg's book, <a href="http://flaskbook.com"><em>Flask Web Development</em></a>.</p>
-
-        <p>{{ lipsum(6) }}</p>
     </div>
+
+<script>
+var flats={{flats|safe}}
+</script>
 {% endblock %}
