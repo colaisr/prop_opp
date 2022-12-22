@@ -29,12 +29,32 @@
         <p>
               <div id="main_map" style="width:400px; height:300px"></div>
         </p>
+        <p>
+            <img src = "https://image.freepik.com/free-vector/whatsapp-icon-design_23-2147900927.jpg" height="50" size="50" onclick="openWhatsApp()">
+            <img src = "https://img.freepik.com/free-vector/telegram-icon_23-2147895383.jpg" height="50" size="50" onclick="openTelegram()">
+
+        </p>
+        <p>
+        <table class="ui compact definition table">
+        <tr><td>ID</td><td>{{ property.id }}</td></tr>
+        <tr><td>Недвижимость</td><td>{{ property.address }}</td></tr>
+        <tr><td>Срок до</td><td>{{ property.Valid_date }}</td></tr>
+        <tr><td>ЦенаН</td><td>{{ property.priceN }}</td></tr>
+        <tr><td>+</td><td>{{ property.plus }}</td></tr>
+        <tr><td>ЦенаК</td><td>{{ property.price_k }}</td></tr>
+        <tr><td>Рынок</td><td>{{ property.market }}</td></tr>
+        <tr><td>Прибыль</td><td>{{ property.profit }}</td></tr>
+        <tr><td>%</td><td>{{ property.percent }}</td></tr>
+        <tr><td>Comment</td><td>{{ property.comment }}</td></tr>
+
+        </table>
+        </p>
 
     </div>
 
 <script>
     $( "#main_map" ).width( $( "#maincontent" ).width() );
-    $( "#main_map" ).height( $( "#maincontent" ).height() )
-    var property={{property|safe}}
+    $( "#main_map" ).height( $( "#maincontent" ).height()/2 )
+    var property={{property_json|safe}}
 </script>
 {% endblock %}

@@ -47,4 +47,4 @@ def prop(prop_id):
     flat = Flat.query.get(prop_id).to_dictionary()
     json_string = json.dumps(flat, ensure_ascii=False)
     return render_template(
-        'main/property.html', property=json_string)
+        'main/property.html', property_json=json_string,property=flat)

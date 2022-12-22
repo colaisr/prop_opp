@@ -1,17 +1,22 @@
-
+function openWhatsApp() {
+    window.open('whatsapp://send?text= '+window.location.href);
+    }
+function openTelegram() {
+    window.open('https://telegram.me/share/url?url='+window.location.href+'&text=Please have a look:');
+    }
 
 $(document).ready(function () {
-//fornow();
     var moscow_map;
 
     ymaps.ready(function(){
 
         moscow_map = new ymaps.Map("main_map", {
-            center: [55.76, 37.64],
-            zoom: 8
+            center: [property.lat, property.lng],
+            zoom: 17,
+            type: 'yandex#hybrid'
         });
 
-            var HintLayout = ymaps.templateLayoutFactory.createClass( "<div class='my-hint'>" +
+        var HintLayout = ymaps.templateLayoutFactory.createClass( "<div class='my-hint'>" +
                 "<b>{{ properties.object }}</b><br />" +
                 "{{ properties.address }}" +
                 "</div>", {
@@ -37,24 +42,21 @@ $(document).ready(function () {
                     }
             }
         );
-            for (let i = 0; i < flats.length; i++) {
 
-                         myPlacemark = new ymaps.Placemark([flats[i].lat, flats[i].lng], {
-                address: "ЦенаК: "+flats[i].price_k,
-                object: "ID: "+flats[i].id
+
+        myPlacemark = new ymaps.Placemark([property.lat, property.lng], {
+                address: "ЦенаК: "+property.price_k,
+                object: "ID: "+property.id
             }, {
                 hintLayout: HintLayout
             });
 
             myPlacemark.events.add(['click'],  function (e) {
-window.location.href = '/prop/'+flats[i].id;
-
-
-})
+            window.location.href = '/prop/'+property.id;})
 
             moscow_map.geoObjects.add(myPlacemark);
 
-            }
+
 
     });
 
