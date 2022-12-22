@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from yandex_geocoder import Client
 import requests
+import openpyxl
 import xlrd
 from flask import (
     Blueprint,
@@ -127,31 +128,54 @@ def flats():
         if file and allowed_file(file.filename):
             filename = file.filename
             file.save(filename)
-            # Open the Workbook
-            workbook = xlrd.open_workbook(filename)
+            # Define variable to load the wookbook
+            wookbook = openpyxl.load_workbook(filename)
 
-            # Open the worksheet
-            worksheet = workbook.sheet_by_index(0)
-
-            # Iterate the rows and columns
-
+            # Define variable to read the active sheet:
+            worksheet = wookbook.active
+            # Iterate the loop to read the cell values
             Flat.query.delete()
-            for i in range(2, 100):
-                if worksheet.cell_value(i, 0)=='':
-                    break
-
+            for i in range(3, worksheet.max_row):
                 flat_to_save=Flat()
-                flat_to_save.address = worksheet.cell_value(i, 0)
-                flat_to_save.Valid_date = worksheet.cell_value(i, 2)
-                flat_to_save.priceN = worksheet.cell_value(i, 3)
-                flat_to_save.plus = worksheet.cell_value(i, 4)
-                flat_to_save.price_k = worksheet.cell_value(i, 5)
-                flat_to_save.market = worksheet.cell_value(i, 6)
-                flat_to_save.profit = worksheet.cell_value(i, 7)
-                flat_to_save.percent = worksheet.cell_value(i, 8)
-                flat_to_save.comment = worksheet.cell_value(i, 10)
+                flat_to_save.address = worksheet.cell(row=i, column=1).value
+                flat_to_save.Valid_date = worksheet.cell(row=i, column=3).value
+                flat_to_save.priceN = worksheet.cell(row=i, column=4).value
+                flat_to_save.plus = worksheet.cell(row=i, column=5).value
+                flat_to_save.price_k = worksheet.cell(row=i, column=6).value
+                flat_to_save.market = worksheet.cell(row=i, column=7).value
+                flat_to_save.profit = worksheet.cell(row=i, column=8).value
+                flat_to_save.percent = worksheet.cell(row=i, column=9).value
+                flat_to_save.comment = worksheet.cell(row=i, column=11).value
                 search_string=flat_to_save.address
                 search_string = search_string.split(':')[1]
+
+
+            # #xlrd
+            # # Open the Workbook
+            # workbook = xlrd.open_workbook(filename,)
+            #
+            # # Open the worksheet
+            # worksheet = workbook.sheet_by_index(0)
+            #
+            # # Iterate the rows and columns
+            #
+            # Flat.query.delete()
+            # for i in range(2, 100):
+            #     content=worksheet.cell_value(i, 0)
+            #     if content=='':
+            #         break
+            #     flat_to_save=Flat()
+            #     flat_to_save.address = worksheet.cell_value(i, 0)
+            #     flat_to_save.Valid_date = worksheet.cell_value(i, 2)
+            #     flat_to_save.priceN = worksheet.cell_value(i, 3)
+            #     flat_to_save.plus = worksheet.cell_value(i, 4)
+            #     flat_to_save.price_k = worksheet.cell_value(i, 5)
+            #     flat_to_save.market = worksheet.cell_value(i, 6)
+            #     flat_to_save.profit = worksheet.cell_value(i, 7)
+            #     flat_to_save.percent = worksheet.cell_value(i, 8)
+            #     flat_to_save.comment = worksheet.cell_value(i, 10)
+            #     search_string=flat_to_save.address
+            #     search_string = search_string.split(':')[1]
 
                 #yandex version
                 try:
@@ -160,7 +184,7 @@ def flats():
                     flat_to_save.lat=coordinates[1]
                     flat_to_save.lng=coordinates[0]
                 except Exception as e:
-                    i=e
+                    v=e
                 #google version
                 # search_string = search_string.replace(".", "")
                 # search_string = search_string.replace(",", "")
