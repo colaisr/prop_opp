@@ -3,6 +3,13 @@ var mobileBreakpoint = '768px';
 var tabletBreakpoint = '992px';
 var smallMonitorBreakpoint = '1200px';
 
+function openWhatsApp() {
+    window.open('whatsapp://send?text= '+window.location.href);
+    }
+function openTelegram() {
+    window.open('https://telegram.me/share/url?url='+window.location.href+'&text=Please have a look:');
+    }
+
 $(document).ready(function () {
   // Enable dismissable flash messages
   $('.message .close').on('click', function () {
