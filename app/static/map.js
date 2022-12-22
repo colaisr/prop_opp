@@ -5,11 +5,10 @@ $(document).ready(function () {
     var moscow_map;
 
     ymaps.ready(function(){
-    if ($('#main_map').length>0)
-    {
+
         moscow_map = new ymaps.Map("main_map", {
             center: [55.76, 37.64],
-            zoom: 10
+            zoom: 8
         });
 
             var HintLayout = ymaps.templateLayoutFactory.createClass( "<div class='my-hint'>" +
@@ -47,11 +46,16 @@ $(document).ready(function () {
                 hintLayout: HintLayout
             });
 
+            myPlacemark.events.add(['click'],  function (e) {
+window.location.href = '/prop/'+flats[i].id;
 
-        moscow_map.geoObjects.add(myPlacemark);
+
+})
+
+            moscow_map.geoObjects.add(myPlacemark);
 
             }
-    }
+
     });
 
 

@@ -3,7 +3,8 @@
 {% block content %}
 
 <!--for the map-->
-<script src="{{url_for('static', filename='map.js')}}"></script>
+    <script src="{{url_for('static', filename='props.js')}}"></script>
+
     <style>
         .my-hint {
             display: inline-block;
@@ -26,7 +27,7 @@
 <!--end of map -->
     <div id="maincontent" class="ui text container">
         <p>
-              <div id="main_map" style="width:800px; height:700px"></div>
+              <div id="main_map" style="width:400px; height:300px"></div>
         </p>
 
     </div>
@@ -34,6 +35,6 @@
 <script>
     $( "#main_map" ).width( $( "#maincontent" ).width() );
     $( "#main_map" ).height( $( "#maincontent" ).height() )
-var flats={{flats|safe}}
+    var property={{property|safe}}
 </script>
 {% endblock %}

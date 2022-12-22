@@ -40,3 +40,11 @@ def about():
     editable_html_obj = EditableHTML.get_editable_html('about')
     return render_template(
         'main/about.html', editable_html_obj=editable_html_obj)
+
+@main.route('/prop/<int:prop_id>')
+def prop(prop_id):
+
+    flat = Flat.query.get(prop_id).to_dictionary()
+    json_string = json.dumps(flat, ensure_ascii=False)
+    return render_template(
+        'main/property.html', property=json_string)
