@@ -3,11 +3,10 @@
 $(document).ready(function () {
 //fornow();
     var moscow_map;
-    var window_width=window.innerWidth-100;
-    var window_height=window.innerHeight;
-    $( "#main_map" ).width( $( "#maincontent" ).width() );
-    $( "#main_map" ).height( $( "#maincontent" ).height() )
+
     ymaps.ready(function(){
+    if ($('#main_map').length>0)
+    {
         moscow_map = new ymaps.Map("main_map", {
             center: [55.76, 37.64],
             zoom: 10
@@ -52,7 +51,7 @@ $(document).ready(function () {
         moscow_map.geoObjects.add(myPlacemark);
 
             }
-
+    }
     });
 
 
