@@ -128,14 +128,14 @@ def flats():
         if file and allowed_file(file.filename):
             filename = file.filename
             file.save(filename)
-            # Define variable to load the wookbook
-            wookbook = openpyxl.load_workbook(filename)
 
-            # Define variable to read the active sheet:
+            #reading excel
+            wookbook = openpyxl.load_workbook(filename, data_only=True)
             worksheet = wookbook.active
-            # Iterate the loop to read the cell values
             Flat.query.delete()
             for i in range(3, worksheet.max_row):
+                if worksheet.cell(row=i, column=1).value==None or ':' not in worksheet.cell(row=i, column=1).value:
+                    continue
                 flat_to_save=Flat()
                 flat_to_save.address = worksheet.cell(row=i, column=1).value
                 flat_to_save.Valid_date = worksheet.cell(row=i, column=3).value
@@ -147,7 +147,7 @@ def flats():
                 flat_to_save.percent = worksheet.cell(row=i, column=9).value
                 flat_to_save.comment = worksheet.cell(row=i, column=11).value
                 search_string=flat_to_save.address
-                search_string = search_string.split(':')[1]
+                search_string = search_string.split(':')[1] or search_string
 
 
             # #xlrd
@@ -178,6 +178,8 @@ def flats():
             #     search_string = search_string.split(':')[1]
 
                 #yandex version
+
+                #location part
                 try:
                     client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
                     coordinates = client.coordinates(search_string)
@@ -185,6 +187,7 @@ def flats():
                     flat_to_save.lng=coordinates[0]
                 except Exception as e:
                     v=e
+
                 #google version
                 # search_string = search_string.replace(".", "")
                 # search_string = search_string.replace(",", "")
@@ -204,6 +207,11 @@ def flats():
 
 
     flats= Flat.query.all()
+    for f in flats:
+        if f.lat and f.lng:
+            f.loc=True
+        # if f.plus:
+        #     f.
     return render_template(
         'admin/flats.html', flats=flats)
 

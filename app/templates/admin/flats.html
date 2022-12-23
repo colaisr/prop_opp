@@ -46,6 +46,7 @@
                         <tr>
                             <th class="sorted ascending">ID</th>
                             <th>Недвижимость</th>
+                            <th>Loc</th>
                             <th>Срок до</th>
                             <th>ЦенаН</th>
                             <th>+</th>
@@ -65,6 +66,11 @@
                         <tr >
                             <td>{{ f.id }}</td>
                             <td>{{ f.address }}</td>
+                            <td><input type="checkbox"
+                                    {% if f.loc %}
+                                        checked
+                                       {% endif %}
+                            ></td>
                             <td>{{ f.Valid_date }}</td>
                             <td>{{ f.priceN }}</td>
                             <td>{{ f.plus }}</td>
