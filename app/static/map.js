@@ -1,7 +1,6 @@
 
 
 $(document).ready(function () {
-//fornow();
     var moscow_map;
 
     ymaps.ready(function(){

@@ -1,3 +1,4 @@
+import json
 import os
 from decimal import Decimal
 
@@ -110,6 +111,36 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@admin.route('/updatelocation', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def updatelocation():
+    r=request.form
+    lng=r['newLng']
+    lat = r['newLat']
+    id=r['id']
+    prop = Flat.query.filter_by(id=id).first()
+    prop.lng=lng
+    prop.lat=lat
+    db.session.add(prop)
+    db.session.commit()
+    return redirect(url_for('admin.flats'))
+
+
+@admin.route('/getposition/<string:address>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def getposition(address):
+    try:
+        client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
+        coordinates = client.coordinates(address)
+        position ={}
+        position['lat'] = float(coordinates[1])
+        position['lng'] = float(coordinates[0])
+        return  '{} {}'.format(position['lat'], position['lng'])
+    except Exception as e:
+        return 'exception'
+
 @admin.route('/flats', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -128,6 +159,7 @@ def flats():
         if file and allowed_file(file.filename):
             filename = file.filename
             file.save(filename)
+
 
             #reading excel
             wookbook = openpyxl.load_workbook(filename, data_only=True)
@@ -149,37 +181,6 @@ def flats():
                 search_string=flat_to_save.address
                 search_string = search_string.split(':')[1] or search_string
 
-
-            # #xlrd
-            # # Open the Workbook
-            # workbook = xlrd.open_workbook(filename,)
-            #
-            # # Open the worksheet
-            # worksheet = workbook.sheet_by_index(0)
-            #
-            # # Iterate the rows and columns
-            #
-            # Flat.query.delete()
-            # for i in range(2, 100):
-            #     content=worksheet.cell_value(i, 0)
-            #     if content=='':
-            #         break
-            #     flat_to_save=Flat()
-            #     flat_to_save.address = worksheet.cell_value(i, 0)
-            #     flat_to_save.Valid_date = worksheet.cell_value(i, 2)
-            #     flat_to_save.priceN = worksheet.cell_value(i, 3)
-            #     flat_to_save.plus = worksheet.cell_value(i, 4)
-            #     flat_to_save.price_k = worksheet.cell_value(i, 5)
-            #     flat_to_save.market = worksheet.cell_value(i, 6)
-            #     flat_to_save.profit = worksheet.cell_value(i, 7)
-            #     flat_to_save.percent = worksheet.cell_value(i, 8)
-            #     flat_to_save.comment = worksheet.cell_value(i, 10)
-            #     search_string=flat_to_save.address
-            #     search_string = search_string.split(':')[1]
-
-                #yandex version
-
-                #location part
                 try:
                     client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
                     coordinates = client.coordinates(search_string)
@@ -205,15 +206,18 @@ def flats():
 
                 flat_to_save.add()
 
+            os.remove(filename)
 
     flats= Flat.query.all()
     for f in flats:
         if f.lat and f.lng:
             f.loc=True
-        # if f.plus:
-        #     f.
+    res=[]
+    for f in flats:
+        res.append(f.to_dictionary())
+    json_string = json.dumps(res, ensure_ascii=False)
     return render_template(
-        'admin/flats.html', flats=flats)
+        'admin/flats.html', flats=flats,flats_json=json_string)
 
 
 
