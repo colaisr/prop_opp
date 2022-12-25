@@ -54,7 +54,7 @@
             </h2>
 
             <div class="ui">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" onsubmit="show_loading();" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <!-- upload of a single file -->
                     <p>
@@ -84,6 +84,7 @@
                     <thead>
                         <tr>
                             <th class="sorted ascending">ID</th>
+                            <th>Edit</th>
                             <th>Недвижимость</th>
                             <th>Loc</th>
                             <th>Срок до</th>
@@ -104,11 +105,11 @@
                     {% for f in flats | sort(attribute='id') %}
                         <tr >
                             <td>{{ f.id }}</td>
+                            <td>
+                                <button onclick="show_modal({{ f.id }})">Edit</button>
+                            </td>
                             <td>{{ f.address }}</td>
                             <td><input type="checkbox" {% if f.loc %} checked {% endif %}>
-                            <!-- Trigger/Open The Modal -->
-                                 {% if not f.loc %} <button onclick="show_modal({{ f.id }})">Fix</button> {% endif %}
-
                             </td>
                             <td>{{ f.Valid_date }}</td>
                             <td>{{ f.priceN }}</td>
@@ -131,143 +132,67 @@
 
 
     <!-- The Modal -->
-    <div id="myModal" class="modal">
-
+    <div id="editModal" class="modal">
       <!-- Modal content -->
       <div class="modal-content">
         <span class="close">&times;</span>
         <form method="post" enctype="multipart/form-data" action="/admin/updatelocation">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <label >Property ID:</label>
-            <label id="editID">100</label><br>
-            <label >Current:</label><br>
-            <label id="currentAddress">100</label><br>
-            <label for="newAddress">Find:</label><br>
-            <input type="text" width="300" id="newAddress" name="newAddress" value="">
-            <input type="hidden" id="newLng" name="newLng" value="">
-            <input type="hidden" id="newLat" name="newLat" value="">
-            <input type="hidden" id="id" name="id" value="">
+            <div style="width: 50%;    float: left;">
+                <label for="lng" >LNG:</label>
+                <input type="text" id="lng" name="lng" value="" readonly>
+                <label for="lat" >LAT:</label>
+                <input type="text" id="lat" name="lat" value="" readonly><br>
+                <label for="newAddress">Find:</label>
+                <input type="text" style="width: 70%;" id="newAddress" name="newAddress" value="">
+                <button onclick="geocodeAddress()" type="button" >Find</button><br>
+                <div id="modal_map" style="width:400px; height:300px"></div>
+                <input type="hidden" id="newLng" name="newLng" value="">
+                <input type="hidden" id="newLat" name="newLat" value="">
+                <input type="hidden" id="id" name="id" value="">
+            </div>
 
-            <button onclick="geocodeAddress()" type="button" >Validate</button>
-            <div id="modal_map" style="width:400px; height:300px"></div>
+            <div style="display: flow-root;">
+                <label >Property ID:   </label>
+                <label id="editID">100</label><br><br>
+                <label >Address:</label><br>
+                <textarea style="width: 80%;" id="Address"  name="Address" rows="4" ></textarea><br><br>
+                <label for="priceN" >PriceN:</label>
+                <input type="text" id="priceN" name="priceN" value=""><br><br>
+                <label for="plus" >Plus:</label>
+                <input type="text" id="plus" name="plus" value=""><br><br>
+                <label for="priceK" >PriceK:</label>
+                <input type="text" id="priceK" name="priceK" value=""><br><br>
+                <label for="market" >Market:</label>
+                <input type="text" id="market" name="market" value=""><br><br>
+                <label for="profit" >Profit:</label>
+                <input type="text" id="profit" name="profit" value=""><br><br>
+                <label for="profitpercent" >Profit %:</label>
+                <input type="text" id="profitpercent" name="profitpercent" value=""><br><br>
+                <label for="comment" >Comment:</label><br>
+                <input type="text" style="width: 80%;" id="comment" name="comment" value=""><br><br>
+
+            </div>
 
             <br><br>
 
-            <input type="submit" value="Submit">
+            <input type="submit" value="Save">
         </form>
       </div>
 
     </div>
+    <div id="loadingModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span> Loading</span>
+      </div>
 
+    </div>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#search-users').keyup(function () {
-                var searchText = $(this).val();
-                if (searchText.length > 0) {
-                    $('tbody td:icontains(' + searchText + ')').addClass('positive');
-                    $('td.positive').not(':icontains(' + searchText + ')').removeClass('positive');
-                    $('tbody td').not(':icontains(' + searchText + ')').closest('tr').addClass('hidden').hide();
-                    $('tr.hidden:icontains(' + searchText + ')').removeClass('hidden').show();
-                } else {
-                    $('td.positive').removeClass('positive');
-                    $('tr.hidden').removeClass('hidden').show();
-                }
-            });
+<script src="{{url_for('static', filename='flats.js')}}"></script>
 
-            $('#select-role').dropdown({
-                onChange: function (value, text, $selectedItem) {
-                    $('td.user.role:contains(' + value + ')').closest('tr').removeClass('hidden').show();
-                    $('td.user.role').not(':contains(' + value + ')').closest('tr').addClass('hidden').hide();
-                }
-            });
-        });
-    </script>
-    <script>
+<script>
 var flats_json={{flats_json|safe}}
-function show_modal(id) {
-  modal.style.display = "block";
-  editedId=id;
-  document.getElementById('editID').innerHTML = editedId;
-  document.getElementById('id').value = editedId;
-  document.getElementById('currentAddress').innerHTML = flats_json[id-1].address;
-}
-function geocodeAddress() {
-var lng
-var lat
-  const address = document.getElementById("newAddress").value;
-  if (!address || address.length < 3) {
-    console.log("The address string is too short. Enter at least three symbols");
-    return;
-  }
-
-$.ajax({
-  method: "GET",
-  url: "/admin/getposition/"+encodeURIComponent(address),
-})
-.done(function( msg ) {
-    lat=msg.split(' ')[0];
-    lng=msg.split(' ')[1];
-    document.getElementById('newLng').value = lng;
-    document.getElementById('newLat').value = lat;
-
-            if (document.getElementById('modal_map').innerHTML!=''){
-                modal_map.destroy();
-            }
-
-            modal_map = new ymaps.Map("modal_map", {
-            center: [lat, lng],
-            zoom: 17
-        });
-        myPlacemark = new ymaps.Placemark([lat,lng]);
-        modal_map.geoObjects.add(myPlacemark);
-});
-
-
-
-}
-
-
-
-
-function check_location(id) {
-
-}
-    // Get the modal
-var modal = document.getElementById("myModal");
-var editedId;
-var editedAddress;
-
-<!--// Get the button that opens the modal-->
-<!--var btn = document.getElementById("myBtn");-->
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-<!--// When the user clicks on the button, open the modal-->
-<!--btn.onclick = function() {-->
-<!--  modal.style.display = "block";-->
-<!--}-->
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-  document.getElementById("newAddress").value='';
-  if (document.getElementById('modal_map').innerHTML!=''){
-    modal_map.destroy();
-}
-
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-    document.getElementById("newAddress").value='';
-    if (document.getElementById('modal_map').innerHTML!=''){
-    modal_map.destroy();
-}
-  }
-}
 </script>
+
 {% endblock %}

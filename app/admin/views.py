@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 from decimal import Decimal
@@ -116,12 +117,23 @@ def allowed_file(filename):
 @admin_required
 def updatelocation():
     r=request.form
-    lng=r['newLng']
-    lat = r['newLat']
+    lng=r['lng']
+    lat = r['lat']
     id=r['id']
     prop = Flat.query.filter_by(id=id).first()
-    prop.lng=lng
-    prop.lat=lat
+    prop.address=r['Address']
+    prop.priceN = r['priceN']
+    prop.plus = r['plus']
+    prop.price_k = r['priceK']
+    prop.market = r['market']
+    prop.profit = r['profit']
+    prop.percent = r['profitpercent']
+    prop.comment = r['comment']
+
+    if not lng=='':
+        prop.lng=lng
+    if not lat=='':
+        prop.lat=lat
     db.session.add(prop)
     db.session.commit()
     return redirect(url_for('admin.flats'))
@@ -212,6 +224,7 @@ def flats():
     for f in flats:
         if f.lat and f.lng:
             f.loc=True
+        # f.Valid_date=datetime.datetime.strptime(f.Valid_date)
     res=[]
     for f in flats:
         res.append(f.to_dictionary())
