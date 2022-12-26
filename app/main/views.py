@@ -30,7 +30,8 @@ def index():
     flats = Flat.query.all()
     res=[]
     for f in flats:
-        res.append(f.to_dictionary())
+        if f.lat is not None:
+            res.append(f.to_dictionary())
     json_string = json.dumps(res, ensure_ascii=False)
     return render_template('main/index.html', flats=json_string)
 
