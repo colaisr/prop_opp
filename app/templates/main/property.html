@@ -36,13 +36,12 @@
         </p>
         <p>
         <table class="ui compact definition table">
-        <tr><td>ID</td><td>{{ property.id }}</td></tr>
-        <tr><td>Недвижимость</td><td>{{ property.address }}</td></tr>
-        <tr><td>Срок до</td><td>{{ property.Valid_date }}</td></tr>
-        <tr><td>ЦенаН</td><td>{{ property.priceN }}</td></tr>
+        <tr><td>Лот</td><td>{{ property.address }}</td></tr>
+        <tr><td>Срок до</td><td>{{ property.date ~'/'+property.month ~'/'~property.year }}</td></tr>
+        <tr><td>ЦенаН</td><td>{{ "{:,}".format(property.priceN) }}</td></tr>
         <tr><td>+</td><td>{{ property.plus }}</td></tr>
-        <tr><td>ЦенаК</td><td>{{ property.price_k }}</td></tr>
-        <tr><td>Рынок</td><td>{{ property.market }}</td></tr>
+        <tr><td>ЦенаК</td><td>{{ "{:,}".format(property.price_k)}}</td></tr>
+        <tr><td>Рынок</td><td>{{ "{:,}".format(property.market) }}</td></tr>
         <tr><td>Прибыль</td><td>{{ property.profit }}</td></tr>
         <tr><td>%</td><td>{{ property.percent }}</td></tr>
         <tr><td>Comment</td><td>{{ property.comment }}</td></tr>

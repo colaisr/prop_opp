@@ -31,6 +31,12 @@ class Flat(db.Model):
         d['profit'] = self.profit
         d['percent'] = self.percent
         d['comment'] = self.comment
+        if hasattr(self, 'date'):
+            d['date'] = self.date or 0
+        if hasattr(self, 'month'):
+            d['month'] = self.month or 0
+        if hasattr(self, 'year'):
+            d['year'] = self.year or 0
         d['lng'] =float(self.lng or 0)
         d['lat'] =float(self.lat or 0)
 

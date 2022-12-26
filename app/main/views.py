@@ -44,7 +44,26 @@ def about():
 @main.route('/prop/<int:prop_id>')
 def prop(prop_id):
 
-    flat = Flat.query.get(prop_id).to_dictionary()
-    json_string = json.dumps(flat, ensure_ascii=False)
+    flat = Flat.query.get(prop_id)
+    flat.Valid_date=datetime.datetime.strptime(flat.Valid_date, '%Y-%m-%d %H:%M:%S')
+    flat.date=flat.Valid_date.day
+    flat.month = flat.Valid_date.month
+    flat.year = flat.Valid_date.year
+    if flat.plus is None:
+        flat.plus=''
+    if flat.profit is None:
+        flat.profit=''
+    if flat.percent is None:
+        flat.percent=''
+    if flat.percent !='':
+        flat.percent=int(flat.percent)
+    if flat.market is None:
+        flat.market=''
+    if flat.plus is not None and flat.plus !='':
+        flat.plus = int(flat.plus)
+
+
+    flat=flat.to_dictionary()
+    json_string = json.dumps(flat, ensure_ascii=False,default=str)
     return render_template(
         'main/property.html', property_json=json_string,property=flat)
