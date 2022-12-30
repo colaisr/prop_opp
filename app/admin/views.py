@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import time
 from decimal import Decimal
 
 from yandex_geocoder import Client
@@ -199,7 +200,68 @@ def flats():
                     flat_to_save.lat=coordinates[1]
                     flat_to_save.lng=coordinates[0]
                 except Exception as e:
-                    v=e
+                    err=e
+                    kn_string=""
+
+
+                    if "к/н:" in flat_to_save.address :
+                        kn_string = flat_to_save.address.split('к/н:')[1]
+                        kn_string = kn_string.split(' ')[1]
+                    elif "к/н" in flat_to_save.address :
+                        kn_string = flat_to_save.address.split('к/н')[1]
+                        kn_string = kn_string.split(' ')[1]
+                    elif "кадастровый номер" in flat_to_save.address :
+                        kn_string = flat_to_save.address.split('кадастровый номер')[1]
+                        kn_string = kn_string.split(' ')[1]
+
+                    if kn_string != "":
+                        kn_string=kn_string.replace(";","")
+                        kn_string = kn_string.replace(",", "")
+                        headers = {
+                            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+
+                        resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/'+kn_string, verify=False, headers=headers)
+                        # while resp.status_code == 204:
+                        #     time.sleep(1)
+                        #     resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/' + kn_string,
+                        #                         verify=False, headers=headers)
+
+                        if resp.status_code==200:
+                            try:
+                                result = resp.json()
+                                if len(result)>0:
+
+                                    addr=result[0]['addressNotes']
+                                    try:
+                                        client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
+                                        coordinates = client.coordinates(addr)
+                                        flat_to_save.lat = coordinates[1]
+                                        flat_to_save.lng = coordinates[0]
+                                    except Exception as e:
+                                        errormessage=e
+                            except Exception as e:
+                                errormessage = e
+                            # elif "к/н" in flat_to_save.address :
+                            #     kn_string = flat_to_save.address.split('к/н')[1]
+                            #     kn=search_string = kn_string.split(' ')[1]
+                            #     headers = {
+                            #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+                            #
+                            #     resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/'+kn, verify=False, headers=headers)
+                            #     result= resp.json()
+                            #     if len(result)>0:
+                            #         addr=result[0]['addressNotes']
+                            #         try:
+                            #             client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
+                            #             coordinates = client.coordinates(addr)
+                            #             flat_to_save.lat = coordinates[1]
+                            #             flat_to_save.lng = coordinates[0]
+                            #         except Exception as e:
+                            #             errormessage=e
+
+
+
+
 
                 #google version
                 # search_string = search_string.replace(".", "")
@@ -221,16 +283,19 @@ def flats():
             os.remove(filename)
 
     flats= Flat.query.all()
+    total_deparments=len(flats)
+    departments_with_location=0
     for f in flats:
         if f.lat and f.lng:
             f.loc=True
+            departments_with_location=departments_with_location+1
         # f.Valid_date=datetime.datetime.strptime(f.Valid_date)
     res=[]
     for f in flats:
         res.append(f.to_dictionary())
     json_string = json.dumps(res, ensure_ascii=False)
     return render_template(
-        'admin/flats.html', flats=flats,flats_json=json_string)
+        'admin/flats.html', flats=flats,flats_json=json_string,total_deparments=total_deparments,departments_with_location=departments_with_location)
 
 
 

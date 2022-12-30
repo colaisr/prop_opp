@@ -105,6 +105,8 @@ function update_modal_map(lat,lng){
     });
     myPlacemark = new ymaps.Placemark([lat,lng]);
     modal_map.geoObjects.add(myPlacemark);
+    
+
 
 
 
