@@ -199,6 +199,9 @@ def flats():
                 elif 'Московская обл., ' in search_string:
                     search_string = search_string.split('Московская обл., ')[1] or search_string
                     search_string = search_string.split(':')[0] or search_string
+                elif 'Московская область,' in search_string:
+                    search_string = search_string.split('Московская область,')[1] or search_string
+                    search_string = search_string.split(':')[0] or search_string
                 try:
                     client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
                     coordinates = client.coordinates(search_string)
