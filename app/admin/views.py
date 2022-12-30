@@ -192,7 +192,13 @@ def flats():
                 flat_to_save.percent = worksheet.cell(row=i, column=9).value
                 flat_to_save.comment = worksheet.cell(row=i, column=11).value
                 search_string=flat_to_save.address
-                search_string = search_string.split(':')[1] or search_string
+                # search_string = search_string.split(':')[1] or search_string
+                if 'МО,' in search_string:
+                    search_string = search_string.split('МО,')[1] or search_string
+                    search_string = search_string.split(':')[0] or search_string
+                elif 'Московская обл., ' in search_string:
+                    search_string = search_string.split('Московская обл., ')[1] or search_string
+                    search_string = search_string.split(':')[0] or search_string
                 try:
                     client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
                     coordinates = client.coordinates(search_string)
