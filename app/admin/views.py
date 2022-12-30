@@ -193,7 +193,6 @@ def flats():
                 flat_to_save.comment = worksheet.cell(row=i, column=11).value
                 search_string=flat_to_save.address
                 search_string = search_string.split(':')[1] or search_string
-
                 try:
                     client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
                     coordinates = client.coordinates(search_string)
@@ -201,63 +200,62 @@ def flats():
                     flat_to_save.lng=coordinates[0]
                 except Exception as e:
                     err=e
-                    kn_string=""
-
-
-                    if "к/н:" in flat_to_save.address :
-                        kn_string = flat_to_save.address.split('к/н:')[1]
-                        kn_string = kn_string.split(' ')[1]
-                    elif "к/н" in flat_to_save.address :
-                        kn_string = flat_to_save.address.split('к/н')[1]
-                        kn_string = kn_string.split(' ')[1]
-                    elif "кадастровый номер" in flat_to_save.address :
-                        kn_string = flat_to_save.address.split('кадастровый номер')[1]
-                        kn_string = kn_string.split(' ')[1]
-
-                    if kn_string != "":
-                        kn_string=kn_string.replace(";","")
-                        kn_string = kn_string.replace(",", "")
-                        headers = {
-                            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-
-                        resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/'+kn_string, verify=False, headers=headers)
-                        # while resp.status_code == 204:
-                        #     time.sleep(1)
-                        #     resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/' + kn_string,
-                        #                         verify=False, headers=headers)
-
-                        if resp.status_code==200:
-                            try:
-                                result = resp.json()
-                                if len(result)>0:
-
-                                    addr=result[0]['addressNotes']
-                                    try:
-                                        client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
-                                        coordinates = client.coordinates(addr)
-                                        flat_to_save.lat = coordinates[1]
-                                        flat_to_save.lng = coordinates[0]
-                                    except Exception as e:
-                                        errormessage=e
-                            except Exception as e:
-                                errormessage = e
-                            # elif "к/н" in flat_to_save.address :
-                            #     kn_string = flat_to_save.address.split('к/н')[1]
-                            #     kn=search_string = kn_string.split(' ')[1]
-                            #     headers = {
-                            #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-                            #
-                            #     resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/'+kn, verify=False, headers=headers)
-                            #     result= resp.json()
-                            #     if len(result)>0:
-                            #         addr=result[0]['addressNotes']
-                            #         try:
-                            #             client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
-                            #             coordinates = client.coordinates(addr)
-                            #             flat_to_save.lat = coordinates[1]
-                            #             flat_to_save.lng = coordinates[0]
-                            #         except Exception as e:
-                            #             errormessage=e
+                    #rosreestr accessible only from russia
+                    # kn_string=""
+                    # if "к/н:" in flat_to_save.address :
+                    #     kn_string = flat_to_save.address.split('к/н:')[1]
+                    #     kn_string = kn_string.split(' ')[1]
+                    # elif "к/н" in flat_to_save.address :
+                    #     kn_string = flat_to_save.address.split('к/н')[1]
+                    #     kn_string = kn_string.split(' ')[1]
+                    # elif "кадастровый номер" in flat_to_save.address :
+                    #     kn_string = flat_to_save.address.split('кадастровый номер')[1]
+                    #     kn_string = kn_string.split(' ')[1]
+                    #
+                    # if kn_string != "":
+                    #     kn_string=kn_string.replace(";","")
+                    #     kn_string = kn_string.replace(",", "")
+                    #     headers = {
+                    #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+                    #
+                    #     resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/'+kn_string, verify=False, headers=headers)
+                    #     # while resp.status_code == 204:
+                    #     #     time.sleep(1)
+                    #     #     resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/' + kn_string,
+                    #     #                         verify=False, headers=headers)
+                    #
+                    #     if resp.status_code==200:
+                    #         try:
+                    #             result = resp.json()
+                    #             if len(result)>0:
+                    #
+                    #                 addr=result[0]['addressNotes']
+                    #                 try:
+                    #                     client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
+                    #                     coordinates = client.coordinates(addr)
+                    #                     flat_to_save.lat = coordinates[1]
+                    #                     flat_to_save.lng = coordinates[0]
+                    #                 except Exception as e:
+                    #                     errormessage=e
+                    #         except Exception as e:
+                    #             errormessage = e
+                    #         # elif "к/н" in flat_to_save.address :
+                    #         #     kn_string = flat_to_save.address.split('к/н')[1]
+                    #         #     kn=search_string = kn_string.split(' ')[1]
+                    #         #     headers = {
+                    #         #         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+                    #         #
+                    #         #     resp = requests.get('https://rosreestr.gov.ru/api/online/fir_objects/'+kn, verify=False, headers=headers)
+                    #         #     result= resp.json()
+                    #         #     if len(result)>0:
+                    #         #         addr=result[0]['addressNotes']
+                    #         #         try:
+                    #         #             client = Client("637f2780-51d5-4978-aa6b-ce5b58e4cba5")
+                    #         #             coordinates = client.coordinates(addr)
+                    #         #             flat_to_save.lat = coordinates[1]
+                    #         #             flat_to_save.lng = coordinates[0]
+                    #         #         except Exception as e:
+                    #         #             errormessage=e
 
 
 
