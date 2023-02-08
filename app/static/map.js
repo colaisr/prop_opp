@@ -40,7 +40,7 @@ $(document).ready(function () {
 
 function numberWithCommas(x) {
     if (x!=null){
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
     else{
     return '';
@@ -77,7 +77,7 @@ function draw_map(props_list){
             "{% if properties.market != 'Рынок: ' %}"+
             "{{ properties.market}}" +
             "</b><br />" +
-            "<span>{{ properties.profit }} {{ properties.percent }}%</span><br />" +
+            "<b>{{ properties.profit }} {{ properties.percent }}</b><br />" +
             "{% else %}" +
             "</b>" +
             "{% endif %}"+
@@ -104,12 +104,13 @@ function draw_map(props_list){
         for (let i = 0; i < props_list.length; i++) {
             profit_adj=Math. round(props_list[i].profit)
             percent_adj=Math. round(props_list[i].percent)
+            priceK_adj=Math. round(props_list[i].price_k)
 
             myPlacemark = new ymaps.Placemark([props_list[i].lat, flats[i].lng], {
-            pricek: "ЦенаK: "+numberWithCommas(props_list[i].price_k),
+            pricek: "ЦенаK: "+numberWithCommas(priceK_adj),
             market: "Рынок: "+numberWithCommas(props_list[i].market),
-            profit: "Прибыль: "+profit_adj,
-            percent: percent_adj
+            profit: "Прибыль: "+numberWithCommas(profit_adj),
+            percent: "("+percent_adj+"%)"
         }, {
             hintLayout: HintLayout
         });
