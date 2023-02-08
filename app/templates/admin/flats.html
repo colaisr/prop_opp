@@ -143,9 +143,9 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div style="width: 50%;    float: left;">
                 <label for="lng" >LNG:</label>
-                <input type="text" id="lng" name="lng" value="" readonly>
+                <input onchange="update_modal_map_manualy();" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();" type="text" id="lng" name="lng" value="" >
                 <label for="lat" >LAT:</label>
-                <input type="text" id="lat" name="lat" value="" readonly><br>
+                <input type="text" id="lat" name="lat" value="" ><br>
                 <label for="newAddress">Find:</label>
                 <input type="text" style="width: 70%;" id="newAddress" name="newAddress" value="">
                 <button onclick="geocodeAddress()" type="button" >Find</button><br>

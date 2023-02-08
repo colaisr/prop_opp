@@ -67,8 +67,9 @@ function draw_map(props_list){
         });
 
         var HintLayout = ymaps.templateLayoutFactory.createClass( "<div class='my-hint'>" +
-            "<b>{{ properties.pricek }}</b><br />" +
-            "{{ properties.market }}<br />" +
+            "<b>{{ properties.pricek }} {{ properties.market }}</b><br />" +
+            "<span>{{ properties.profit }} {{ properties.percent }}%</span><br />" +
+
             "</div>", {
                 /**
                  * Defining the getShape method,
@@ -84,7 +85,7 @@ function draw_map(props_list){
                         result = new ymaps.shape.Rectangle(
                             new ymaps.geometry.pixel.Rectangle([
                                 [0, 0],
-                                [firstChild.offsetWidth, firstChild.offsetHeight]
+                                [firstChild.offsetWidth, (firstChild.scrollHeight)]
                             ])
                         );
                     }
@@ -97,7 +98,7 @@ function draw_map(props_list){
                      myPlacemark = new ymaps.Placemark([props_list[i].lat, flats[i].lng], {
             pricek: "ЦенаK: "+numberWithCommas(props_list[i].price_k),
             market: "Рынок: "+numberWithCommas(props_list[i].market),
-            profit: "Profit: "+props_list[i].profit,
+            profit: "Прибыль: "+props_list[i].profit,
             percent: props_list[i].percent
         }, {
             hintLayout: HintLayout

@@ -94,6 +94,12 @@ function geocodeAddress() {
         update_modal_map(lat,lng)
     });
 }
+
+function update_modal_map_manualy() {
+        lng=document.getElementById('lng').value ;
+        lat=document.getElementById('lat').value ;
+        update_modal_map(lat,lng);
+}
 function update_modal_map(lat,lng){
     if (document.getElementById('modal_map').innerHTML!=''){
         modal_map.destroy();

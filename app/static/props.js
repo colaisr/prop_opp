@@ -13,7 +13,7 @@ $(document).ready(function () {
         moscow_map = new ymaps.Map("main_map", {
             center: [property.lat, property.lng],
             zoom: 17,
-            type: 'yandex#hybrid'
+            type: 'yandex#map'
         });
 
         var HintLayout = ymaps.templateLayoutFactory.createClass( "<div class='my-hint'>" +
