@@ -66,17 +66,25 @@ function draw_map(props_list){
             zoom: 8
         });
 
+        market_part = "rr";
+        // profit_part={{ properties.profit }};
+        // percent_part={{ properties.percent }};
+
+
+
         var HintLayout = ymaps.templateLayoutFactory.createClass( "<div class='my-hint'>" +
-            "<b>{{ properties.pricek }} {{ properties.market }}</b><br />" +
+            "<b>{{ properties.pricek }} " +
+            "{% if properties.market != 'Рынок: ' %}"+
+            "{{ properties.market}}" +
+            "</b><br />" +
             "<span>{{ properties.profit }} {{ properties.percent }}%</span><br />" +
+            "{% else %}" +
+            "</b>" +
+            "{% endif %}"+
+
+
 
             "</div>", {
-                /**
-                 * Defining the getShape method,
-                 * which will return the size of the hint layout.
-                 * This is necessary in order for the hint to automatically
-                 * move its position when going off the map.
-                 */
                 getShape: function () {
                     var el = this.getElement(),
                         result = null;
@@ -94,12 +102,14 @@ function draw_map(props_list){
         }
     );
         for (let i = 0; i < props_list.length; i++) {
+            profit_adj=Math. round(props_list[i].profit)
+            percent_adj=Math. round(props_list[i].percent)
 
-                     myPlacemark = new ymaps.Placemark([props_list[i].lat, flats[i].lng], {
+            myPlacemark = new ymaps.Placemark([props_list[i].lat, flats[i].lng], {
             pricek: "ЦенаK: "+numberWithCommas(props_list[i].price_k),
             market: "Рынок: "+numberWithCommas(props_list[i].market),
-            profit: "Прибыль: "+props_list[i].profit,
-            percent: props_list[i].percent
+            profit: "Прибыль: "+profit_adj,
+            percent: percent_adj
         }, {
             hintLayout: HintLayout
         });
