@@ -7,40 +7,57 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='ion.rangeSlider.min.css') }}">
 
 <script src="{{url_for('static', filename='map.js')}}"></script>
-    <style>
-        .my-hint {
-            display: inline-block;
-            padding: 5px;
-            height: 35px;
-            position: relative;
-            left: -10px;
-            width: 195px;
-            font-size: 11px;
-            line-height: 17px;
-            color: #333333;
-            text-align: center;
-            vertical-align: middle;
-            background-color: #faefb6;
-            border: 1px solid #CDB7B5;
-            border-radius: 20px;
-            font-family: Arial;
-        }
-    </style>
+<style>
+    .my-hint {
+        display: inline-block;
+        padding: 5px;
+        height: 35px;
+        position: relative;
+        left: -10px;
+        width: 195px;
+        font-size: 11px;
+        line-height: 17px;
+        color: #333333;
+        text-align: center;
+        vertical-align: middle;
+        background-color: #faefb6;
+        border: 1px solid #CDB7B5;
+        border-radius: 20px;
+        font-family: Arial;
+    }
+</style>
 <!--end of map -->
-    <div id="maincontent" class="ui text container">
-        <p>
-            <input type="text" class="js-range-slider" name="my_range" value="" />
+<div id="maincontent" class="ui text container">
+    <p>
+    <div style="display: flex;">
+        <div style="width: 50%;margin-top: 20px;">
+            <input style="accent-color: #1b1c1d" type="radio" id="show_prop_all" name="show_prop" value="все" onclick="filter_prop_type(this.value)" checked/>
+            <label for="show_prop_all">Все</label>
 
-        </p>
-        <p>
-              <div id="main_map" style="width:800px; height:700px"></div>
-        </p>
+            <input style="accent-color: #ff0000" type="radio" id="show_prop_kv" name="show_prop" value="кв" onclick="filter_prop_type(this.value)"/>
+            <label for="show_prop_kv">Кв</label>
 
+            <input style="accent-color: #9c6f04" type="radio" id="show_prop_dom" name="show_prop" value="дом" onclick="filter_prop_type(this.value)"/>
+            <label for="show_prop_dom">Дом</label>
+            <input style="accent-color: #0000ff" type="radio" id="show_prop_zemlya" name="show_prop" value="земля" onclick="filter_prop_type(this.value)"/>
+            <label for="show_prop_zemlya">Земля</label>
+            <input style="accent-color: #00ff00" type="radio" id="show_prop_nezhilie" name="show_prop" value="нежилые" onclick="filter_prop_type(this.value)"/>
+            <label for="show_prop_nezhilie">Нежилые</label>
+        </div>
+        <div style="flex-grow: 1;">
+            <input type="text" class="js-range-slider" name="my_range" value=""/>
+        </div>
     </div>
+    </p>
+    <p>
+    <div id="main_map" style="width:800px; height:700px"></div>
+    </p>
+
+</div>
 
 <script>
-    $( "#main_map" ).width( $( "#maincontent" ).width() )*0.9;
-    $( "#main_map" ).height( $( "#maincontent" ).height() )
-var flats={{flats|safe}}
+    $("#main_map").width($("#maincontent").width()) * 0.9;
+    $("#main_map").height($("#maincontent").height())
+    var flats = {{flats | safe}}
 </script>
 {% endblock %}
