@@ -88,6 +88,7 @@
                         <tr>
                             <th class="sorted ascending">ID</th>
                             <th>Edit</th>
+                            <th>Тип</th>
                             <th>Недвижимость</th>
                             <th>Loc</th>
                             <th>Срок до</th>
@@ -111,6 +112,7 @@
                             <td>
                                 <button onclick="show_modal({{ f.id }})">Edit</button>
                             </td>
+                            <td>{{ f.prop_type }}</td>
                             <td>{{ f.address }}</td>
                             <td><input type="checkbox" {% if f.loc %} checked {% endif %}>
                             </td>
@@ -158,6 +160,8 @@
             <div style="display: flow-root;">
                 <label >Property ID:   </label>
                 <label id="editID">100</label><br><br>
+                <label for="prop_type" >Property type:</label>
+                <input type="text" id="prop_type" name="prop_type" value=""><br><br>
                 <label >Address:</label><br>
                 <textarea style="width: 80%;" id="Address"  name="Address" rows="4" ></textarea><br><br>
                 <label for="priceN" >PriceN:</label>

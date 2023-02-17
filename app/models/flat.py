@@ -15,6 +15,7 @@ class Flat(db.Model):
     comment = db.Column(db.String(64))
     lng = db.Column(db.Numeric)
     lat = db.Column(db.Numeric)
+    prop_type = db.Column(db.String(64))
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
@@ -23,6 +24,7 @@ class Flat(db.Model):
         d = {}
         d['id'] = self.id
         d['address'] = self.address
+        d['prop_type'] = self.prop_type
         d['Valid_date'] = self.Valid_date
         d['priceN'] = self.priceN
         d['plus'] = self.plus

@@ -102,6 +102,17 @@ function draw_map(props_list){
         }
     );
         for (let i = 0; i < props_list.length; i++) {
+            var icon_colour='#000000'
+            if (props_list[i].prop_type=='кв') {
+                icon_colour='#ff0000';
+            }
+            else
+                if (props_list[i].prop_type=='нежилые') {
+                icon_colour='#00ff00';
+            } else
+                if (props_list[i].prop_type=='земля') {
+                icon_colour='#0000ff';
+            }
             profit_adj=Math. round(props_list[i].profit)
             percent_adj=Math. round(props_list[i].percent)
             priceK_adj=Math. round(props_list[i].price_k)
@@ -112,7 +123,9 @@ function draw_map(props_list){
             profit: "Прибыль: "+numberWithCommas(profit_adj),
             percent: "("+percent_adj+"%)"
         }, {
-            hintLayout: HintLayout
+            hintLayout: HintLayout,
+                preset: "islands#circleDotIcon",
+                iconColor: icon_colour
         });
 
         myPlacemark.events.add(['click'],  function (e) {

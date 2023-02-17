@@ -59,6 +59,7 @@ function show_modal(id) {
 
   document.getElementById('editID').innerHTML = editedId;
   document.getElementById('id').value = editedId;
+  document.getElementById('prop_type').value = edited_flat.prop_type;
   document.getElementById('Address').value = edited_flat.address;
   document.getElementById('priceN').value = edited_flat.priceN;
   document.getElementById('plus').value = edited_flat.plus;

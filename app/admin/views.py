@@ -122,6 +122,7 @@ def updatelocation():
     lat = r['lat']
     id=r['id']
     prop = Flat.query.filter_by(id=id).first()
+    prop.prop_type=r['prop_type']
     prop.address=r['Address']
     prop.priceN = r['priceN']
     prop.plus = r['plus']
@@ -179,18 +180,19 @@ def flats():
             worksheet = wookbook.active
             Flat.query.delete()
             for i in range(3, worksheet.max_row):
-                if worksheet.cell(row=i, column=1).value==None or ':' not in worksheet.cell(row=i, column=1).value:
+                if worksheet.cell(row=i, column=1).value==None :
                     continue
                 flat_to_save=Flat()
-                flat_to_save.address = worksheet.cell(row=i, column=1).value
-                flat_to_save.Valid_date = worksheet.cell(row=i, column=3).value
-                flat_to_save.priceN = worksheet.cell(row=i, column=4).value
-                flat_to_save.plus = worksheet.cell(row=i, column=5).value
-                flat_to_save.price_k = worksheet.cell(row=i, column=6).value
-                flat_to_save.market = worksheet.cell(row=i, column=7).value
-                flat_to_save.profit = worksheet.cell(row=i, column=8).value
-                flat_to_save.percent = worksheet.cell(row=i, column=9).value
-                flat_to_save.comment = worksheet.cell(row=i, column=11).value
+                flat_to_save.prop_type = worksheet.cell(row=i, column=1).value
+                flat_to_save.address = worksheet.cell(row=i, column=2).value
+                flat_to_save.Valid_date = worksheet.cell(row=i, column=4).value
+                flat_to_save.priceN = worksheet.cell(row=i, column=5).value
+                flat_to_save.plus = worksheet.cell(row=i, column=6).value
+                flat_to_save.price_k = worksheet.cell(row=i, column=7).value
+                flat_to_save.market = worksheet.cell(row=i, column=8).value
+                flat_to_save.profit = worksheet.cell(row=i, column=9).value
+                flat_to_save.percent = worksheet.cell(row=i, column=10).value
+                flat_to_save.comment = worksheet.cell(row=i, column=12).value
                 search_string=flat_to_save.address
                 # search_string = search_string.split(':')[1] or search_string
                 if 'МО,' in search_string:
